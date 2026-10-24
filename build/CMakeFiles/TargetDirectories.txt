@@ -1,3 +1,0 @@
-/home/mohanad/poople-solver/build/CMakeFiles/poople_solver.dir
-/home/mohanad/poople-solver/build/CMakeFiles/edit_cache.dir
-/home/mohanad/poople-solver/build/CMakeFiles/rebuild_cache.dir
