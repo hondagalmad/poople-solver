@@ -3,7 +3,7 @@
 #include "../bfs/bfs.hpp"
 const auto &words = GetVals();
 int GetPoopleIdx(){
-    auto it = std::find(words.begin(),words.end(),"Poop");
+    auto it = std::find(words.begin(),words.end(),"poop");
      if(it == words.end()) throw std::runtime_error("Target word not found\n");
      return it - words.begin();
 }
