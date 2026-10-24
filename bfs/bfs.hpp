@@ -4,10 +4,9 @@
 #include <queue>
 #include <stdexcept>
 #include <vector>
+  const auto& adjacency = GetAdjacencyList();
 inline std::vector<int> BFS(const int root) {
-	const auto& adjacency = GetAdjacencyList();
 	const std::size_t vertex_count = adjacency.size();
-
 	if (vertex_count == 0) {
 		throw std::runtime_error("cannot run BFS on an empty graph");
 	}
