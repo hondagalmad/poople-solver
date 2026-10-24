@@ -14,11 +14,12 @@ std::vector<std::vector<int>> ValidEdges(const std::vector<std::string> &vals){
     if(vals.empty()) throw std::runtime_error("db is empty\n");
     int n = (int) vals.size();
     std::vector<std::vector<int>> adj(n);
-    for(int i = 0; i < n; i++)
-       for(int j = 0; j < n; j++){
-        if(i == j) continue;    
-        if(Is_Valid_Edge(vals[i], vals[j])) adj[i].push_back(j);
-       }
-       return adj;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            if (Is_Valid_Edge(vals[i], vals[j])) adj[i].push_back(j);
+        }
+    }
+    return adj;
 }
 #endif

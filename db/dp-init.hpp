@@ -9,9 +9,9 @@
 
 inline const std::vector<std::vector<int>>& GetAdjacencyList() {
     static const std::vector<std::vector<int>> adj = [] {
-        std::ifstream dictionary("dictionary.txt");
+        std::ifstream dictionary(POOPLE_DICTIONARY_PATH);
         if (!dictionary) {
-            throw std::runtime_error("could not open dictionary.txt");
+            throw std::runtime_error("could not open dictionary at " POOPLE_DICTIONARY_PATH);
         }
 
         std::vector<std::string> words;
@@ -28,9 +28,9 @@ inline const std::vector<std::vector<int>>& GetAdjacencyList() {
 
 inline const std::vector<std::string>& GetVals(){
     static const std::vector<std::string>vals = [] {
-        std::ifstream dictionary ("dictionary.txt");
+        std::ifstream dictionary(POOPLE_DICTIONARY_PATH);
         if (!dictionary) {
-            throw std::runtime_error("could not open dictionary.txt");
+            throw std::runtime_error("could not open dictionary at " POOPLE_DICTIONARY_PATH);
         }
 
         std::vector<std::string> words;
