@@ -26,4 +26,20 @@ inline const std::vector<std::vector<int>>& GetAdjacencyList() {
     return adj;
 }
 
+inline const std::vector<std::string>& GetVals(){
+    static const std::vector<std::string>vals = [] {
+        std::ifstream dictionary ("dictionary.txt");
+        if (!dictionary) {
+            throw std::runtime_error("could not open dictionary.txt");
+        }
+
+        std::vector<std::string> words;
+        std::string word;
+        while (dictionary >> word) {
+            words.push_back(word);
+        }
+        return words;
+    }();
+    return vals;
+}
 #endif
