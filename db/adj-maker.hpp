@@ -6,9 +6,13 @@
 const std:: string poople = "poop";
 bool Is_Valid_Edge(const std::string &s, const std::string &k){
     if((int)s.size() != 4 || (int)k.size() != 4)throw std::runtime_error("invalid word in the db\n");
+    int cnt = 0;
   for(int i = 0; i < 4; i++)
-     if(k[i] == poople[i] && k[i] != s[i]) return false;
-   return true;
+    { 
+        if(k[i] == poople[i] && k[i] != s[i]) return false;
+        cnt += (k[i] != s[i]);
+    }
+   return cnt == 1;
 }
 std::vector<std::vector<int>> ValidEdges(const std::vector<std::string> &vals){
     if(vals.empty()) throw std::runtime_error("db is empty\n");
