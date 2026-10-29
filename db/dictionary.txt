@@ -797,7 +797,6 @@ calf
 calk
 call
 calm
-calp
 calx
 camb
 came
@@ -1018,7 +1017,6 @@ corf
 cork
 corm
 corn
-corp
 cosh
 coss
 cost
@@ -3418,7 +3416,6 @@ more
 morg
 morn
 moro
-mort
 mose
 moss
 most
@@ -4091,18 +4088,14 @@ pony
 pooa
 poof
 pooh
-pook
 pool
-poon
 poop
 poor
-poot
 pope
 pops
 pore
 pork
 porn
-porr
 port
 pory
 pose
@@ -6069,4 +6062,3 @@ zuni
 zuza
 zyga
 zyme
-

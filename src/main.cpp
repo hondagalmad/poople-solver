@@ -4,6 +4,7 @@
 #include <cctype>
 #include <iostream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace {
@@ -17,7 +18,8 @@ std::string lowercase(std::string value) {
 void printBanner() {
     std::cout << "\n  P O O P L E   S O L V E R\n"
               << "  Find a valid route from a dictionary word to poop.\n"
-              << "  Enter a four-letter word, or q to quit.\n\n";
+              << "  Enter a four-letter word, or q to quit.\n"
+              << "  After a route, you can remove a word rejected by the game and refit.\n\n";
 }
 
 void printSolution(const std::vector<std::string>& route) {
@@ -36,6 +38,7 @@ void printSolution(const std::vector<std::string>& route) {
 int main() {
     printBanner();
     std::string input;
+    std::unordered_set<std::string> removed_words;
     while (true) {
         std::cout << "Start word: ";
         if (!std::getline(std::cin, input)) {
@@ -58,7 +61,34 @@ int main() {
             continue;
         }
         try {
-            printSolution(solution(path(input)));
+            while (true) {
+                const std::vector<std::string> route = FindRoute(input, removed_words);
+                printSolution(route);
+
+                std::cout << "Rejected game word (Enter for a new start word): ";
+                std::string rejected;
+                if (!std::getline(std::cin, rejected)) {
+                    std::cout << "\nGoodbye.\n";
+                    return 0;
+                }
+                rejected = lowercase(rejected);
+                if (rejected.empty()) break;
+                if (rejected == "q" || rejected == "quit" || rejected == "exit") {
+                    std::cout << "Goodbye.\n";
+                    return 0;
+                }
+                if (rejected == "poop") {
+                    std::cout << "The target word cannot be removed.\n\n";
+                    continue;
+                }
+                if (std::find(route.begin(), route.end(), rejected) == route.end()) {
+                    std::cout << "That word is not in the displayed route; nothing was removed.\n\n";
+                    continue;
+                }
+                removed_words.insert(rejected);
+                RemoveWordFromDictionary(rejected);
+                std::cout << "Removed '" << rejected << "' from the dictionary. Refitting route...\n";
+            }
         } catch (const std::exception& error) {
             std::cout << "Could not solve '" << input << "': " << error.what() << "\n\n";
         }

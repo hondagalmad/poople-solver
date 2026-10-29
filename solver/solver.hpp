@@ -1,32 +1,76 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
-#include "../bfs/bfs.hpp"
+#include "../db/dp-init.hpp"
+
+#include <algorithm>
 #include <cctype>
-const auto &words = GetVals();
-int GetPoopleIdx(){
-    auto it = std::find(words.begin(),words.end(),"poop");
-     if(it == words.end()) throw std::runtime_error("Target word not found\n");
-     return it - words.begin();
+#include <queue>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+inline std::string NormalizeWord(std::string value) {
+    std::transform(value.begin(), value.end(), value.begin(),
+        [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
+    return value;
 }
-int GetWordIdx(const std::string &s){
-    std::string normalized = s;
-    std::transform(normalized.begin(), normalized.end(), normalized.begin(),
-        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-    auto it = std::find(words.begin(),words.end(),normalized);
-     if(it == words.end()) throw std::runtime_error("Target word not found\n");
-     return it - words.begin();
-}
-std::vector<int> path(std::string s){
-    if(s.empty())throw std::runtime_error("No string have been provided\n");
-    auto paths = BFS(GetPoopleIdx(), GetWordIdx(s));
-    std::reverse(paths.begin(), paths.end());
-    return paths;
-}
-std::vector<std::string> solution(const std::vector<int> &path){
-    if(path.empty()) throw std::runtime_error("no path found\n");
-    std::vector<std::string> ans;
-    for(int i = 0; i < (int)path.size(); i++)
-        ans.push_back(words[path[i]]);
-    return ans;
+
+// Generates one-letter neighbors on demand, so a route can be recalculated
+// without words the game has rejected.
+inline std::vector<std::string> FindRoute(
+    const std::string& start_word,
+    const std::unordered_set<std::string>& excluded_words) {
+    const std::string start = NormalizeWord(start_word);
+    const auto& words = GetVals();
+    const std::unordered_set<std::string> dictionary(words.begin(), words.end());
+    constexpr char target[] = "poop";
+
+    if (dictionary.find(start) == dictionary.end()) {
+        throw std::runtime_error("word is not in this solver's dictionary");
+    }
+    if (excluded_words.find(start) != excluded_words.end()) {
+        throw std::runtime_error("start word has been removed");
+    }
+
+    std::queue<std::string> pending;
+    std::unordered_map<std::string, std::string> parent;
+    parent.emplace(start, start);
+    pending.push(start);
+
+    while (!pending.empty() && parent.find(target) == parent.end()) {
+        const std::string current = pending.front();
+        pending.pop();
+
+        for (std::size_t index = 0; index < current.size(); ++index) {
+            // A letter that already matches "poop" is locked in place.
+            if (current[index] == target[index]) continue;
+            for (char letter = 'a'; letter <= 'z'; ++letter) {
+                if (letter == current[index]) continue;
+                std::string candidate = current;
+                candidate[index] = letter;
+                if (dictionary.find(candidate) == dictionary.end() ||
+                    excluded_words.find(candidate) != excluded_words.end() ||
+                    parent.find(candidate) != parent.end()) {
+                    continue;
+                }
+                parent.emplace(candidate, current);
+                pending.push(candidate);
+            }
+        }
+    }
+
+    if (parent.find(target) == parent.end()) {
+        throw std::runtime_error("no route remains after the removed words were excluded");
+    }
+
+    std::vector<std::string> route;
+    for (std::string current = target;; current = parent.at(current)) {
+        route.push_back(current);
+        if (current == start) break;
+    }
+    std::reverse(route.begin(), route.end());
+    return route;
 }
 #endif
